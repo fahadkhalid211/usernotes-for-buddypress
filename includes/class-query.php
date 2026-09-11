@@ -75,6 +75,7 @@ class Query {
 		}
 
 		// Ordering: Pinned notes always surface first, followed by date/order.
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Scoped strictly to post_type and single author.
 		$query_args['meta_key'] = Post_Type::META_PINNED;
 		$query_args['orderby']  = [
 			'meta_value_num' => 'DESC',
@@ -116,6 +117,7 @@ class Query {
 		}
 
 		if ( ! empty( $meta_query ) ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Scoped strictly to post_type and single author for visibility isolation.
 			$query_args['meta_query'] = $meta_query;
 		}
 
@@ -272,6 +274,7 @@ class Query {
 		];
 
 		if ( 'public' === $visibility ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Scoped strictly to post_type and single author.
 			$args['meta_query'] = [
 				[
 					'key'     => Post_Type::META_VISIBILITY,
@@ -280,6 +283,7 @@ class Query {
 				],
 			];
 		} else {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Scoped strictly to post_type and single author.
 			$args['meta_query'] = [
 				'relation' => 'OR',
 				[

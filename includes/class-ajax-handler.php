@@ -32,30 +32,12 @@ class Ajax_Handler {
 	}
 
 	/**
-	 * Verify standard request nonce.
-	 *
-	 * @return void
-	 */
-	private static function verify_request_nonce(): void {
-		$nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ) : '';
-
-		if ( ! Security::verify_nonce( $nonce ) ) {
-			wp_send_json_error(
-				[
-					'message' => __( 'Security verification failed. Please refresh and try again.', 'usernotes-for-buddypress' ),
-				],
-				403
-			);
-		}
-	}
-
-	/**
 	 * AJAX endpoint to retrieve notes.
 	 *
 	 * @return void
 	 */
 	public static function get_notes(): void {
-		self::verify_request_nonce();
+		check_ajax_referer( Security::NONCE_ACTION, 'nonce' );
 
 		$author_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
 		if ( ! $author_id && function_exists( 'bp_displayed_user_id' ) ) {
@@ -65,7 +47,7 @@ class Ajax_Handler {
 			$author_id = get_current_user_id();
 		}
 
-		$visibility = isset( $_GET['visibility'] ) ? sanitize_key( $_GET['visibility'] ) : 'all';
+		$visibility = isset( $_GET['visibility'] ) ? sanitize_key( wp_unslash( $_GET['visibility'] ) ) : 'all';
 		$search     = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
 		$page       = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
 		$per_page   = (int) get_option( 'bp_usernotes_per_page', 10 );
@@ -100,7 +82,7 @@ class Ajax_Handler {
 	 * @return void
 	 */
 	public static function save_note(): void {
-		self::verify_request_nonce();
+		check_ajax_referer( Security::NONCE_ACTION, 'nonce' );
 
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( [ 'message' => __( 'You must be logged in to save notes.', 'usernotes-for-buddypress' ) ], 401 );
@@ -108,10 +90,11 @@ class Ajax_Handler {
 
 		$current_user_id = get_current_user_id();
 		$note_id         = isset( $_POST['note_id'] ) ? absint( $_POST['note_id'] ) : 0;
-		$raw_title       = isset( $_POST['title'] ) ? (string) $_POST['title'] : '';
-		$raw_content     = isset( $_POST['content'] ) ? (string) $_POST['content'] : '';
-		$raw_visibility  = isset( $_POST['visibility'] ) ? (string) $_POST['visibility'] : 'private';
-		$raw_color       = isset( $_POST['color'] ) ? (string) $_POST['color'] : '';
+		$title           = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+		$content         = isset( $_POST['content'] ) ? wp_kses( wp_unslash( $_POST['content'] ), Security::get_allowed_tags() ) : '';
+		$visibility      = isset( $_POST['visibility'] ) ? Security::sanitize_visibility( sanitize_key( wp_unslash( $_POST['visibility'] ) ) ) : 'private';
+		$color           = isset( $_POST['color'] ) ? sanitize_hex_color( wp_unslash( $_POST['color'] ) ) : '';
+		$color           = $color ? $color : '';
 		$is_pinned       = ! empty( $_POST['is_pinned'] );
 
 		// Permission verification.
@@ -124,11 +107,6 @@ class Ajax_Handler {
 				wp_send_json_error( [ 'message' => __( 'You do not have permission to create notes.', 'usernotes-for-buddypress' ) ], 403 );
 			}
 		}
-
-		$title      = Security::sanitize_title( $raw_title );
-		$content    = Security::sanitize_content( $raw_content );
-		$visibility = Security::sanitize_visibility( $raw_visibility );
-		$color      = Security::sanitize_color( $raw_color );
 
 		// Validation: At least title or content must be provided.
 		if ( '' === trim( $title ) && '' === trim( wp_strip_all_tags( $content ) ) ) {
@@ -199,7 +177,7 @@ class Ajax_Handler {
 	 * @return void
 	 */
 	public static function delete_note(): void {
-		self::verify_request_nonce();
+		check_ajax_referer( Security::NONCE_ACTION, 'nonce' );
 
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( [ 'message' => __( 'You must be logged in to delete notes.', 'usernotes-for-buddypress' ) ], 401 );
@@ -243,7 +221,7 @@ class Ajax_Handler {
 	 * @return void
 	 */
 	public static function toggle_visibility(): void {
-		self::verify_request_nonce();
+		check_ajax_referer( Security::NONCE_ACTION, 'nonce' );
 
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized access.', 'usernotes-for-buddypress' ) ], 401 );
@@ -294,7 +272,7 @@ class Ajax_Handler {
 	 * @return void
 	 */
 	public static function toggle_pin(): void {
-		self::verify_request_nonce();
+		check_ajax_referer( Security::NONCE_ACTION, 'nonce' );
 
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( [ 'message' => __( 'Unauthorized access.', 'usernotes-for-buddypress' ) ], 401 );

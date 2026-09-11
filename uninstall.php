@@ -14,14 +14,15 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 $delete_all_data = (bool) get_option( 'bp_usernotes_delete_on_uninstall', 0 );
 
 if ( $delete_all_data ) {
-	global $wpdb;
-
-	// Query all note IDs.
-	$note_ids = $wpdb->get_col(
-		$wpdb->prepare(
-			"SELECT ID FROM {$wpdb->posts} WHERE post_type = %s",
-			'bp_note'
-		)
+	// Query all note IDs via standard WordPress API.
+	$note_ids = get_posts(
+		[
+			'post_type'        => 'bp_note',
+			'post_status'      => 'any',
+			'numberposts'      => -1,
+			'fields'           => 'ids',
+			'suppress_filters' => true,
+		]
 	);
 
 	if ( ! empty( $note_ids ) ) {

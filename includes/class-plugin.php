@@ -47,9 +47,6 @@ final class Plugin {
 	 * @return void
 	 */
 	private function setup_hooks(): void {
-		// Translation loading.
-		add_action( 'init', [ $this, 'load_textdomain' ] );
-
 		// Core post type & query layer.
 		Post_Type::init();
 		Ajax_Handler::init();
@@ -77,19 +74,6 @@ final class Plugin {
 
 		// Asset loading on BuddyPress profile.
 		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_frontend_assets' ] );
-	}
-
-	/**
-	 * Load plugin internationalization textdomain.
-	 *
-	 * @return void
-	 */
-	public function load_textdomain(): void {
-		load_plugin_textdomain(
-			'usernotes-for-buddypress',
-			false,
-			dirname( BP_USERNOTES_BASENAME ) . '/languages'
-		);
 	}
 
 	/**

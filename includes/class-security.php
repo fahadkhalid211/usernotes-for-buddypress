@@ -212,14 +212,11 @@ class Security {
 	}
 
 	/**
-	 * Sanitize note rich content using safe KSES tags.
+	 * Get allowed HTML tags for note rich content.
 	 *
-	 * @param string $content Raw content.
-	 * @return string
+	 * @return array
 	 */
-	public static function sanitize_content( string $content ): string {
-		$content = wp_unslash( $content );
-
+	public static function get_allowed_tags(): array {
 		$allowed_tags = [
 			'p'          => [ 'class' => true ],
 			'br'         => [],
@@ -259,9 +256,17 @@ class Security {
 		 *
 		 * @param array $allowed_tags Array of allowed tags.
 		 */
-		$allowed_tags = apply_filters( 'bp_usernotes_allowed_html_tags', $allowed_tags );
+		return (array) apply_filters( 'bp_usernotes_allowed_html_tags', $allowed_tags );
+	}
 
-		return wp_kses( $content, $allowed_tags );
+	/**
+	 * Sanitize note rich content using safe KSES tags.
+	 *
+	 * @param string $content Raw content.
+	 * @return string
+	 */
+	public static function sanitize_content( string $content ): string {
+		return wp_kses( wp_unslash( $content ), self::get_allowed_tags() );
 	}
 
 	/**
