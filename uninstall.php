@@ -14,23 +14,25 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 $delete_all_data = (bool) get_option( 'bp_usernotes_delete_on_uninstall', 0 );
 
 if ( $delete_all_data ) {
-	// Query all note IDs via standard WordPress API.
-	$note_ids = get_posts(
-		[
-			'post_type'        => 'bp_note',
-			'post_status'      => 'any',
-			'numberposts'      => -1,
-			'fields'           => 'ids',
-			'suppress_filters' => true,
-		]
-	);
+	// Query and delete note posts in batches to respect performance and memory limits.
+	do {
+		$note_ids = get_posts(
+			[
+				'post_type'      => 'bp_note',
+				'post_status'    => 'any',
+				'posts_per_page' => 100,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			]
+		);
 
-	if ( ! empty( $note_ids ) ) {
-		foreach ( $note_ids as $note_id ) {
-			// Force delete post and all associated meta.
-			wp_delete_post( (int) $note_id, true );
+		if ( ! empty( $note_ids ) ) {
+			foreach ( $note_ids as $note_id ) {
+				// Force delete post and all associated meta.
+				wp_delete_post( (int) $note_id, true );
+			}
 		}
-	}
+	} while ( ! empty( $note_ids ) );
 
 	// Delete all registered plugin options.
 	$options_to_delete = [
