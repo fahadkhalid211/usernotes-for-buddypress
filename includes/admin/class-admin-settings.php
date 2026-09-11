@@ -94,7 +94,7 @@ class Admin_Settings {
 			[
 				'type'              => 'string',
 				'sanitize_callback' => 'sanitize_text_field',
-				'default'           => __( 'Notes', 'usernotes-for-buddypress' ),
+				'default'           => __( 'Journal', 'usernotes-for-buddypress' ),
 			]
 		);
 
@@ -112,7 +112,7 @@ class Admin_Settings {
 			[
 				'type'              => 'string',
 				'sanitize_callback' => [ __CLASS__, 'sanitize_slug' ],
-				'default'           => 'notes',
+				'default'           => 'journal',
 			]
 		);
 
@@ -270,10 +270,10 @@ class Admin_Settings {
 	 * @return void
 	 */
 	public static function render_field_tab_label(): void {
-		$value = get_option( 'bp_usernotes_tab_label', __( 'Notes', 'usernotes-for-buddypress' ) );
+		$value = get_option( 'bp_usernotes_tab_label', __( 'Journal', 'usernotes-for-buddypress' ) );
 		?>
 		<input type="text" name="bp_usernotes_tab_label" id="bp_usernotes_tab_label" value="<?php echo esc_attr( $value ); ?>" class="regular-text" />
-		<p class="description"><?php esc_html_e( 'Display name shown on the BuddyPress member profile tab (e.g., Notes, Journal, Notebook, Diary).', 'usernotes-for-buddypress' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Display name shown on the BuddyPress member profile tab (e.g., Journal, Notes, Notebook, Diary).', 'usernotes-for-buddypress' ); ?></p>
 		<?php
 	}
 
@@ -283,7 +283,7 @@ class Admin_Settings {
 	 * @return void
 	 */
 	public static function render_field_slug(): void {
-		$value = get_option( 'bp_usernotes_slug', 'notes' );
+		$value = get_option( 'bp_usernotes_slug', 'journal' );
 		?>
 		<code>/members/[username]/</code><input type="text" name="bp_usernotes_slug" id="bp_usernotes_slug" value="<?php echo esc_attr( $value ); ?>" class="small-text" style="width: 130px;" /><code>/</code>
 		<p class="description"><?php esc_html_e( 'URL slug for the notes component. Only lowercase letters, numbers, and hyphens.', 'usernotes-for-buddypress' ); ?></p>
@@ -386,7 +386,9 @@ class Admin_Settings {
 	 */
 	public static function sanitize_slug( string $slug ): string {
 		$sanitized = sanitize_title( $slug );
-		return ! empty( $sanitized ) ? $sanitized : 'notes';
+		$final     = ! empty( $sanitized ) ? $sanitized : 'journal';
+		flush_rewrite_rules( false );
+		return $final;
 	}
 
 	/**

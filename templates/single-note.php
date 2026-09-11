@@ -15,7 +15,7 @@ if ( empty( $note ) ) {
 
 $displayed_user_id = bp_displayed_user_id();
 $user_domain       = bp_displayed_user_domain();
-$slug              = get_option( 'bp_usernotes_slug', Component::ID );
+$slug              = get_option( 'bp_usernotes_slug', 'journal' );
 $back_url          = trailingslashit( $user_domain . $slug );
 $public_enabled    = (bool) get_option( 'bp_usernotes_enable_public', 1 );
 ?>

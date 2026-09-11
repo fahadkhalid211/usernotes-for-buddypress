@@ -1,0 +1,17 @@
+﻿# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Build & Archives
+*.zip
+*.tar.gz
+node_modules/
+vendor/
+
+# Local logs
+*.log

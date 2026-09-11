@@ -384,7 +384,7 @@
 			`;
 		}
 
-		const singleUrl = note.author_url ? note.author_url + (window.bpUserNotes.slug || 'notes') + '/' + note.id + '/' : '#';
+		const singleUrl = note.author_url ? note.author_url + (config.slug || 'journal') + '/' + note.id + '/' : '#';
 
 		// Extract a clean excerpt from raw content.
 		const tempDiv = document.createElement('div');

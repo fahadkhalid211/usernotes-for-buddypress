@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || exit;
 $displayed_user_id = bp_displayed_user_id();
 $viewer_id         = get_current_user_id();
 $is_owner          = ( $viewer_id > 0 && $viewer_id === $displayed_user_id );
+$tab_label         = get_option( 'bp_usernotes_tab_label', __( 'Journal', 'usernotes-for-buddypress' ) );
 $can_create        = Security::can_create_notes( $displayed_user_id );
 $public_enabled    = (bool) get_option( 'bp_usernotes_enable_public', 1 );
 $counts            = Query::get_counts( $displayed_user_id, $viewer_id );
@@ -25,22 +26,29 @@ $open_new          = ! empty( $open_new );
 		<div class="bpun-header-info">
 			<h2 class="bpun-title">
 				<?php if ( $is_owner ) : ?>
-					<?php esc_html_e( 'My Notes & Journal', 'usernotes-for-buddypress' ); ?>
+					<?php
+					printf(
+						/* translators: %s: tab label */
+						esc_html__( 'My %s', 'usernotes-for-buddypress' ),
+						esc_html( $tab_label )
+					);
+					?>
 				<?php else : ?>
 					<?php
 					printf(
-						/* translators: %s: User display name */
-						esc_html__( '%s&#8217;s Public Notes', 'usernotes-for-buddypress' ),
-						esc_html( bp_get_displayed_user_display_name() )
+						/* translators: 1: User display name, 2: tab label */
+						esc_html__( '%1$s&#8217;s Public %2$s', 'usernotes-for-buddypress' ),
+						esc_html( bp_get_displayed_user_display_name() ),
+						esc_html( $tab_label )
 					);
 					?>
 				<?php endif; ?>
 			</h2>
 			<p class="bpun-subtitle">
 				<?php if ( $is_owner ) : ?>
-					<?php esc_html_e( 'Your private notebook. Notes stay private to you unless you explicitly choose to share them.', 'usernotes-for-buddypress' ); ?>
+					<?php esc_html_e( 'Your private space. Entries stay private to you unless you explicitly choose to share them.', 'usernotes-for-buddypress' ); ?>
 				<?php else : ?>
-					<?php esc_html_e( 'Public journal entries and shared notes.', 'usernotes-for-buddypress' ); ?>
+					<?php esc_html_e( 'Public entries and shared thoughts.', 'usernotes-for-buddypress' ); ?>
 				<?php endif; ?>
 			</p>
 		</div>

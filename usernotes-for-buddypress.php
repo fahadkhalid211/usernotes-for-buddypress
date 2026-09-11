@@ -81,11 +81,11 @@ function bp_usernotes_activate(): void {
 	}
 
 	if ( false === get_option( 'bp_usernotes_tab_label' ) ) {
-		add_option( 'bp_usernotes_tab_label', __( 'Notes', 'usernotes-for-buddypress' ) );
+		add_option( 'bp_usernotes_tab_label', __( 'Journal', 'usernotes-for-buddypress' ) );
 	}
 
 	if ( false === get_option( 'bp_usernotes_slug' ) ) {
-		add_option( 'bp_usernotes_slug', 'notes' );
+		add_option( 'bp_usernotes_slug', 'journal' );
 	}
 
 	if ( false === get_option( 'bp_usernotes_per_page' ) ) {

@@ -30,12 +30,19 @@ class Component extends \BP_Component {
 	public static string $current_screen = 'all';
 
 	/**
+	 * Current action variable (e.g. note ID) when dispatched.
+	 *
+	 * @var string
+	 */
+	public static string $current_action_var = '';
+
+	/**
 	 * Constructor for User Notes BuddyPress Component.
 	 */
 	public function __construct() {
-		$name = get_option( 'bp_usernotes_tab_label', __( 'Notes', 'usernotes-for-buddypress' ) );
+		$name = get_option( 'bp_usernotes_tab_label', __( 'Journal', 'usernotes-for-buddypress' ) );
 
-		parent::__construct(
+		parent::start(
 			self::ID,
 			$name,
 			BP_USERNOTES_PLUGIN_DIR
@@ -49,15 +56,15 @@ class Component extends \BP_Component {
 	 * @return void
 	 */
 	public function setup_globals( $args = [] ): void {
-		$slug = get_option( 'bp_usernotes_slug', self::ID );
-		$slug = sanitize_title( $slug ? $slug : self::ID );
+		$slug = get_option( 'bp_usernotes_slug', 'journal' );
+		$slug = sanitize_title( $slug ? $slug : 'journal' );
 
 		parent::setup_globals(
 			[
 				'slug'                  => $slug,
 				'root_slug'             => isset( buddypress()->pages->{$slug}->slug ) ? buddypress()->pages->{$slug}->slug : $slug,
 				'has_directory'         => false,
-				'search_string'         => __( 'Search Notes...', 'usernotes-for-buddypress' ),
+				'search_string'         => __( 'Search Journal...', 'usernotes-for-buddypress' ),
 				'notification_callback' => '',
 			]
 		);
@@ -71,23 +78,21 @@ class Component extends \BP_Component {
 	 * @return void
 	 */
 	public function setup_nav( $main_nav = [], $sub_nav = [] ): void {
-		if ( ! bp_is_user() ) {
-			return;
-		}
-
-		$displayed_user_id = bp_displayed_user_id();
-		$is_my_profile     = bp_is_my_profile();
-		$slug              = $this->slug;
-		$user_domain       = bp_displayed_user_domain();
-		$component_link    = trailingslashit( $user_domain . $slug );
-
-		// Visibility check: If viewing another member's profile and public notes are disabled, hide tab completely.
+		$slug           = get_option( 'bp_usernotes_slug', 'journal' );
+		$slug           = sanitize_title( $slug ? $slug : 'journal' );
+		$tab_label      = get_option( 'bp_usernotes_tab_label', __( 'Journal', 'usernotes-for-buddypress' ) );
 		$public_enabled = (bool) get_option( 'bp_usernotes_enable_public', 1 );
-		if ( ! $is_my_profile && ! $public_enabled && ! current_user_can( 'manage_options' ) ) {
-			return;
+
+		// Determine parent URL dynamically.
+		$displayed_url = '';
+		if ( function_exists( 'bp_displayed_user_domain' ) ) {
+			$displayed_url = bp_displayed_user_domain();
+		}
+		if ( empty( $displayed_url ) && function_exists( 'bp_members_get_user_url' ) && function_exists( 'bp_displayed_user_id' ) ) {
+			$displayed_url = bp_members_get_user_url( bp_displayed_user_id() );
 		}
 
-		$tab_label = get_option( 'bp_usernotes_tab_label', __( 'Notes', 'usernotes-for-buddypress' ) );
+		$component_link = trailingslashit( $displayed_url . $slug );
 
 		// Main navigation item on member profile.
 		$main_nav_item = [
@@ -100,9 +105,9 @@ class Component extends \BP_Component {
 			'item_css_id'             => 'bp-usernotes-nav',
 		];
 
-		// Sub-nav: All Notes / My Notes.
+		// Sub-nav: All Entries.
 		$sub_nav[] = [
-			'name'            => $is_my_profile ? __( 'My Notes', 'usernotes-for-buddypress' ) : __( 'Public Notes', 'usernotes-for-buddypress' ),
+			'name'            => __( 'All Entries', 'usernotes-for-buddypress' ),
 			'slug'            => 'all',
 			'parent_url'      => $component_link,
 			'parent_slug'     => $slug,
@@ -111,20 +116,32 @@ class Component extends \BP_Component {
 			'user_has_access' => true,
 		];
 
-		// Sub-nav: Add Note (only available to profile owner or admins).
-		if ( $is_my_profile || current_user_can( 'manage_options' ) ) {
-			$sub_nav[] = [
-				'name'            => __( 'Add Note', 'usernotes-for-buddypress' ),
-				'slug'            => 'new',
-				'parent_url'      => $component_link,
-				'parent_slug'     => $slug,
-				'screen_function' => [ __CLASS__, 'screen_loader' ],
-				'position'        => 20,
-				'user_has_access' => Security::can_create_notes( $displayed_user_id ),
-			];
-		}
+		// Sub-nav: New Entry.
+		$sub_nav[] = [
+			'name'            => __( 'New Entry', 'usernotes-for-buddypress' ),
+			'slug'            => 'new',
+			'parent_url'      => $component_link,
+			'parent_slug'     => $slug,
+			'screen_function' => [ __CLASS__, 'screen_loader' ],
+			'position'        => 20,
+			'user_has_access' => true,
+		];
 
 		parent::setup_nav( $main_nav_item, $sub_nav );
+
+		// Register an alias route for the complementary slug ('notes' <-> 'journal') so neither ever 404s.
+		$alias_slug = ( 'journal' === $slug ) ? 'notes' : 'journal';
+		bp_core_new_nav_item(
+			[
+				'name'                    => esc_html( $tab_label ),
+				'slug'                    => $alias_slug,
+				'position'                => 76,
+				'screen_function'         => [ __CLASS__, 'screen_loader' ],
+				'default_subnav_slug'     => 'all',
+				'show_for_displayed_user' => false,
+				'item_css_id'             => 'bp-usernotes-nav-alias',
+			]
+		);
 	}
 
 	/**
@@ -140,8 +157,9 @@ class Component extends \BP_Component {
 
 		$user_id     = bp_loggedin_user_id();
 		$user_domain = bp_members_get_user_url( $user_id );
-		$notes_link  = trailingslashit( $user_domain . $this->slug );
-		$tab_label   = get_option( 'bp_usernotes_tab_label', __( 'Notes', 'usernotes-for-buddypress' ) );
+		$slug        = get_option( 'bp_usernotes_slug', 'journal' );
+		$notes_link  = trailingslashit( $user_domain . $slug );
+		$tab_label   = get_option( 'bp_usernotes_tab_label', __( 'Journal', 'usernotes-for-buddypress' ) );
 
 		$wp_admin_nav[] = [
 			'parent' => buddypress()->my_account_menu_id,
@@ -153,7 +171,7 @@ class Component extends \BP_Component {
 		$wp_admin_nav[] = [
 			'parent' => 'my-account-' . self::ID,
 			'id'     => 'my-account-' . self::ID . '-all',
-			'title'  => __( 'All Notes', 'usernotes-for-buddypress' ),
+			'title'  => __( 'All Entries', 'usernotes-for-buddypress' ),
 			'href'   => esc_url( $notes_link ),
 		];
 
@@ -161,7 +179,7 @@ class Component extends \BP_Component {
 			$wp_admin_nav[] = [
 				'parent' => 'my-account-' . self::ID,
 				'id'     => 'my-account-' . self::ID . '-new',
-				'title'  => __( 'Add Note', 'usernotes-for-buddypress' ),
+				'title'  => __( 'New Entry', 'usernotes-for-buddypress' ),
 				'href'   => esc_url( trailingslashit( $notes_link . 'new' ) ),
 			];
 		}
@@ -172,17 +190,29 @@ class Component extends \BP_Component {
 	/**
 	 * Route and handle BuddyPress screen actions.
 	 *
+	 * @param string $action_override Optional sub-action to force.
 	 * @return void
 	 */
-	public static function screen_loader(): void {
-		$action_var = bp_action_variable( 0 );
+	public static function screen_loader( string $action_override = '' ): void {
+		$action_var     = bp_action_variable( 0 );
+		$current_action = bp_current_action();
+
+		if ( ! empty( $action_override ) ) {
+			if ( is_numeric( $action_override ) ) {
+				$action_var = $action_override;
+			} else {
+				$current_action = $action_override;
+			}
+		}
+
+		self::$current_action_var = (string) $action_var;
 
 		// Check if viewing an individual note by ID.
 		if ( ! empty( $action_var ) && is_numeric( $action_var ) ) {
 			self::$current_screen = 'single';
 			add_action( 'bp_template_title', [ __CLASS__, 'screen_title_single' ] );
 			add_action( 'bp_template_content', [ __CLASS__, 'render_single_note' ] );
-		} elseif ( 'new' === bp_current_action() || 'new' === $action_var ) {
+		} elseif ( 'new' === $current_action || 'new' === $action_var ) {
 			self::$current_screen = 'new';
 			add_action( 'bp_template_title', [ __CLASS__, 'screen_title_new' ] );
 			add_action( 'bp_template_content', [ __CLASS__, 'render_new_note' ] );
@@ -194,10 +224,9 @@ class Component extends \BP_Component {
 
 		/**
 		 * Filter template file to load for member plugins template.
-		 *
-		 * @param string $template Template path name.
 		 */
-		$template = apply_filters( 'bp_usernotes_member_template', 'members/single/plugins' );
+		$template = apply_filters( 'bp_core_template_plugin', 'members/single/plugins' );
+		$template = apply_filters( 'bp_usernotes_member_template', $template );
 		bp_core_load_template( $template );
 	}
 
@@ -207,13 +236,20 @@ class Component extends \BP_Component {
 	 * @return void
 	 */
 	public static function screen_title_list(): void {
+		$tab_label = get_option( 'bp_usernotes_tab_label', __( 'Journal', 'usernotes-for-buddypress' ) );
+
 		if ( bp_is_my_profile() ) {
-			esc_html_e( 'My Personal Notes & Journal', 'usernotes-for-buddypress' );
+			printf(
+				/* translators: %s: tab label */
+				esc_html__( 'My %s', 'usernotes-for-buddypress' ),
+				esc_html( $tab_label )
+			);
 		} else {
 			printf(
-				/* translators: %s: Display name of the profile member */
-				esc_html__( '%s&#8217;s Public Notes', 'usernotes-for-buddypress' ),
-				esc_html( bp_get_displayed_user_display_name() )
+				/* translators: 1: member display name, 2: tab label */
+				esc_html__( '%1$s&#8217;s Public %2$s', 'usernotes-for-buddypress' ),
+				esc_html( bp_get_displayed_user_display_name() ),
+				esc_html( $tab_label )
 			);
 		}
 	}
@@ -224,7 +260,7 @@ class Component extends \BP_Component {
 	 * @return void
 	 */
 	public static function screen_title_new(): void {
-		esc_html_e( 'Create New Note', 'usernotes-for-buddypress' );
+		esc_html_e( 'Create New Entry', 'usernotes-for-buddypress' );
 	}
 
 	/**
@@ -233,13 +269,14 @@ class Component extends \BP_Component {
 	 * @return void
 	 */
 	public static function screen_title_single(): void {
-		$note_id = absint( bp_action_variable( 0 ) );
-		$note    = get_post( $note_id );
+		$action_var = ! empty( self::$current_action_var ) ? self::$current_action_var : bp_action_variable( 0 );
+		$note_id    = absint( $action_var );
+		$note       = get_post( $note_id );
 
 		if ( $note && Post_Type::POST_TYPE === $note->post_type ) {
 			echo esc_html( get_the_title( $note ) );
 		} else {
-			esc_html_e( 'View Note', 'usernotes-for-buddypress' );
+			esc_html_e( 'View Entry', 'usernotes-for-buddypress' );
 		}
 	}
 
@@ -274,8 +311,9 @@ class Component extends \BP_Component {
 	 * @return void
 	 */
 	public static function render_single_note(): void {
-		$note_id = absint( bp_action_variable( 0 ) );
-		$viewer  = get_current_user_id();
+		$action_var = ! empty( self::$current_action_var ) ? self::$current_action_var : bp_action_variable( 0 );
+		$note_id    = absint( $action_var );
+		$viewer     = get_current_user_id();
 
 		if ( ! Security::can_view_note( $note_id, $viewer ) ) {
 			echo '<div class="bp-feedback error"><span class="bp-icon" aria-hidden="true"></span><p>' .
