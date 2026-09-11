@@ -1,0 +1,348 @@
+# Copyright (C) 2026 Fahad Khalid
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: User Notes for BuddyPress 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/usernotes-for-buddypress\n"
+"Last-Translator: Fahad Khalid <fahad@example.com>\n"
+"Language-Team: English <support@example.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-11T06:45:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.9.0\n"
+"X-Domain: usernotes-for-buddypress\n"
+
+#. Plugin Name of the plugin
+msgid "User Notes for BuddyPress"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://wordpress.org/plugins/usernotes-for-buddypress/"
+msgstr ""
+
+#. Description of the plugin
+msgid "A modern, private-by-default personal notes and journaling system for BuddyPress members."
+msgstr ""
+
+#. Author of the plugin
+msgid "Fahad Khalid"
+msgstr ""
+
+#: usernotes-for-buddypress.php:48
+msgid "This plugin requires BuddyPress (or BuddyBoss Platform) to be installed and activated."
+msgstr ""
+
+#: includes/class-post-type.php:54
+msgctxt "post type general name"
+msgid "Notes"
+msgstr ""
+
+#: includes/class-post-type.php:55
+msgctxt "post type singular name"
+msgid "Note"
+msgstr ""
+
+#: includes/class-post-type.php:56
+msgctxt "admin menu"
+msgid "User Notes"
+msgstr ""
+
+#: includes/class-post-type.php:57
+msgctxt "add new on admin bar"
+msgid "Note"
+msgstr ""
+
+#: includes/class-post-type.php:58
+msgctxt "note"
+msgid "Add New"
+msgstr ""
+
+#: includes/class-post-type.php:59
+msgid "Add New Note"
+msgstr ""
+
+#: includes/class-post-type.php:60
+msgid "New Note"
+msgstr ""
+
+#: includes/class-post-type.php:61
+msgid "Edit Note"
+msgstr ""
+
+#: includes/class-post-type.php:62
+msgid "View Note"
+msgstr ""
+
+#: includes/class-post-type.php:63
+msgid "All Notes"
+msgstr ""
+
+#: includes/class-post-type.php:64
+msgid "Search Notes"
+msgstr ""
+
+#: includes/class-post-type.php:65
+msgid "No notes found."
+msgstr ""
+
+#: includes/class-post-type.php:66
+msgid "No notes found in Trash."
+msgstr ""
+
+#: includes/class-post-type.php:97
+msgid "Note visibility: private or public"
+msgstr ""
+
+#: includes/class-post-type.php:112
+msgid "Whether note is pinned to top"
+msgstr ""
+
+#: includes/class-post-type.php:127
+msgid "Note accent color hex code"
+msgstr ""
+
+#: includes/class-component.php:39
+#: includes/class-component.php:67
+#: includes/admin/class-admin-settings.php:82
+msgid "Notes"
+msgstr ""
+
+#: includes/class-component.php:57
+msgid "Search Notes..."
+msgstr ""
+
+#: includes/class-component.php:86
+msgid "My Notes"
+msgstr ""
+
+#: includes/class-component.php:86
+msgid "Public Notes"
+msgstr ""
+
+#: includes/class-component.php:97
+#: includes/class-component.php:132
+msgid "Add Note"
+msgstr ""
+
+#: includes/class-component.php:156
+msgid "My Personal Notes & Journal"
+msgstr ""
+
+#: includes/class-component.php:160
+msgid "%s&#8217;s Public Notes"
+msgstr ""
+
+#: includes/class-component.php:171
+msgid "Create New Note"
+msgstr ""
+
+#: includes/class-component.php:198
+msgid "You do not have permission to create notes on this profile."
+msgstr ""
+
+#: includes/class-component.php:215
+msgid "This note is private or does not exist."
+msgstr ""
+
+#: includes/class-query.php:181
+msgid "%s ago"
+msgstr ""
+
+#: includes/class-query.php:191
+msgid "%d min read"
+msgid_plural "%d min read"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-ajax-handler.php:45
+msgid "Security verification failed. Please refresh and try again."
+msgstr ""
+
+#: includes/class-ajax-handler.php:100
+msgid "You must be logged in to save notes."
+msgstr ""
+
+#: includes/class-ajax-handler.php:111
+msgid "You do not have permission to edit this note."
+msgstr ""
+
+#: includes/class-ajax-handler.php:115
+msgid "You do not have permission to create notes."
+msgstr ""
+
+#: includes/class-ajax-handler.php:125
+msgid "A note must have a title or some content."
+msgstr ""
+
+#: includes/class-ajax-handler.php:134
+msgid "Note - %s"
+msgstr ""
+
+#: includes/class-ajax-handler.php:164
+msgid "Note updated successfully."
+msgstr ""
+
+#: includes/class-ajax-handler.php:165
+msgid "Note created successfully."
+msgstr ""
+
+#: includes/class-ajax-handler.php:180
+msgid "You must be logged in to delete notes."
+msgstr ""
+
+#: includes/class-ajax-handler.php:187
+msgid "You do not have permission to delete this note."
+msgstr ""
+
+#: includes/class-ajax-handler.php:198
+msgid "Could not delete note. Please try again."
+msgstr ""
+
+#: includes/class-ajax-handler.php:204
+msgid "Note moved to Trash."
+msgstr ""
+
+#: includes/class-ajax-handler.php:219
+#: includes/class-ajax-handler.php:267
+msgid "Unauthorized access."
+msgstr ""
+
+#: includes/class-ajax-handler.php:226
+#: includes/class-ajax-handler.php:274
+msgid "You do not have permission to modify this note."
+msgstr ""
+
+#: includes/class-ajax-handler.php:235
+msgid "Public notes are disabled by administrator."
+msgstr ""
+
+#: includes/class-ajax-handler.php:246
+#: includes/class-plugin.php:163
+msgid "Public"
+msgstr ""
+
+#: includes/class-ajax-handler.php:246
+#: includes/class-plugin.php:164
+msgid "Private"
+msgstr ""
+
+#: includes/class-ajax-handler.php:247
+#: includes/class-plugin.php:165
+msgid "Make Public"
+msgstr ""
+
+#: includes/class-ajax-handler.php:247
+#: includes/class-plugin.php:166
+msgid "Make Private"
+msgstr ""
+
+#: includes/class-ajax-handler.php:249
+msgid "Note is now public and visible on your profile."
+msgstr ""
+
+#: includes/class-ajax-handler.php:250
+msgid "Note is now private and only visible to you."
+msgstr ""
+
+#: includes/class-ajax-handler.php:283
+msgid "Note pinned to top."
+msgstr ""
+
+#: includes/class-ajax-handler.php:284
+msgid "Note unpinned."
+msgstr ""
+
+#: includes/class-privacy.php:36
+#: includes/class-privacy.php:111
+msgid "BuddyPress User Notes & Journal"
+msgstr ""
+
+#: includes/class-privacy.php:70
+msgid "Note ID"
+msgstr ""
+
+#: includes/class-privacy.php:74
+msgid "Title"
+msgstr ""
+
+#: includes/class-privacy.php:78
+msgid "Content"
+msgstr ""
+
+#: includes/class-privacy.php:82
+msgid "Visibility"
+msgstr ""
+
+#: includes/class-privacy.php:86
+msgid "Is Pinned"
+msgstr ""
+
+#: includes/class-privacy.php:87
+msgid "Yes"
+msgstr ""
+
+#: includes/class-privacy.php:87
+msgid "No"
+msgstr ""
+
+#: includes/class-privacy.php:90
+msgid "Date Created"
+msgstr ""
+
+#: includes/class-privacy.php:94
+msgid "Last Modified"
+msgstr ""
+
+#: includes/class-privacy.php:100
+msgid "Personal Notes & Journal"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:51
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:63
+msgid "User Notes & Journal Settings"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:74
+msgid "Display & Navigation"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:89
+msgid "Profile Tab Label"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:108
+msgid "URL Endpoint Slug"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:127
+msgid "Notes Per Page"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:137
+msgid "Privacy & Access Control"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:152
+msgid "Public Notes Sharing"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:171
+msgid "Default Visibility"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:190
+msgid "Role Access Restrictions"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:200
+msgid "Data Hygiene & Uninstallation"
+msgstr ""
+
+#: includes/admin/class-admin-settings.php:215
+msgid "Uninstall Data Cleanup"
+msgstr ""

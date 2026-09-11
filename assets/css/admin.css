@@ -1,0 +1,153 @@
+/**
+ * User Notes for BuddyPress - Admin Dashboard Styles
+ *
+ * @package BP_UserNotes
+ */
+
+.bpun-admin-wrap {
+	max-width: 1200px;
+	margin-top: 20px;
+}
+
+.bpun-admin-header {
+	margin-bottom: 24px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid #c3c4c7;
+}
+
+.bpun-admin-branding h1 {
+	font-size: 1.6rem;
+	font-weight: 600;
+	margin: 0 0 6px 0;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	color: #1d2327;
+}
+
+.bpun-version-tag {
+	font-size: 0.75rem;
+	font-weight: 600;
+	background-color: #2271b1;
+	color: #ffffff;
+	padding: 2px 8px;
+	border-radius: 12px;
+	vertical-align: middle;
+}
+
+.bpun-admin-tagline {
+	font-size: 0.9375rem;
+	color: #646970;
+	margin: 0;
+}
+
+/* Two-column layout */
+.bpun-admin-layout {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 24px;
+	align-items: flex-start;
+}
+
+.bpun-card {
+	background: #ffffff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 24px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.bpun-card-title {
+	font-size: 1rem;
+	font-weight: 600;
+	margin: 0 0 16px 0;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #f0f0f1;
+	color: #1d2327;
+}
+
+/* Status Sidebar List */
+.bpun-status-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bpun-status-list li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 0;
+	border-bottom: 1px solid #f0f0f1;
+	font-size: 0.875rem;
+}
+
+.bpun-status-list li:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+.bpun-status-label {
+	color: #50575e;
+}
+
+.bpun-status-value {
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.bpun-status-badge {
+	font-size: 0.75rem;
+	font-weight: 600;
+	padding: 2px 8px;
+	border-radius: 4px;
+	line-height: 1.4;
+}
+
+.bpun-badge-active {
+	background-color: #edfaef;
+	color: #046a38;
+}
+
+.bpun-badge-private {
+	background-color: #fcf0f1;
+	color: #b32d2e;
+}
+
+.bpun-guide-card {
+	margin-top: 20px;
+}
+
+.bpun-guide-card .description {
+	margin: 0 0 12px 0;
+	line-height: 1.5;
+	color: #50575e;
+}
+
+/* Form controls styling */
+.bpun-admin-main .form-table th {
+	width: 220px;
+	padding: 20px 10px 20px 0;
+}
+
+.bpun-admin-main .form-table td {
+	padding: 15px 10px;
+}
+
+.bpun-admin-main h2 {
+	font-size: 1.15rem;
+	font-weight: 600;
+	margin: 24px 0 12px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.bpun-admin-main h2:first-of-type {
+	margin-top: 0;
+}
+
+@media (max-width: 900px) {
+	.bpun-admin-layout {
+		grid-template-columns: 1fr;
+	}
+}
